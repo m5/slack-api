@@ -24,6 +24,7 @@ data Channel = Channel { _channelId         :: ChannelId
                        , _channelTopic      :: Maybe Topic
                        , _channelPurpose    :: Maybe Purpose
                        , _channelIsMember   :: Bool
+                       , _channelIsOpen     :: Bool
                        , _channelOpt        :: Maybe ChannelOpt
                        , _channelIsGroup    :: Bool
                        } deriving Show
@@ -38,6 +39,8 @@ instance FromJSON Channel where
                                                   <*> o .: "created" <*> o .:"creator"
                                                   <*> o .:? "is_archived" <*> defaultToFalse o "is_general"
                                                   <*> o .:? "members" <*> o .:? "topic"
-                                                  <*> o .:? "purpose" <*> defaultToFalse o "is_member"
+                                                  <*> o .:? "purpose" 
+                                                  <*> defaultToFalse o "is_member"
+                                                  <*> defaultToFalse o "is_open"
                                                   <*> (pure $ parseMaybe parseJSON (Object o) :: Parser (Maybe ChannelOpt))
                                                   <*> o .:? "is_group" .!= False)
