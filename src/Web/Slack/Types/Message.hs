@@ -65,7 +65,40 @@ data Attachment = Attachment
     , attachmentTs :: Maybe POSIXTime
         -- ^ Display an additional timestamp value as part of the
         -- attachment's footer.
-    }
+    } deriving (Show)
+
+instance FromJSON Attachment where
+  parseJSON = withObject "Attachment" (\o -> Attachment 
+    -- { attachmentFallback :: T.Text
+          <$> o .: "fallback" 
+    -- , attachmentColor :: AttachmentColor
+          <*> pure DefaultColor
+    -- , attachmentAuthorName :: Maybe T.Text
+          <*> pure Nothing 
+    -- , attachmentPretext :: Maybe T.Text
+          <*> pure Nothing 
+    -- , attachmentAuthorLink :: Maybe URL
+          <*> pure Nothing 
+    -- , attachmentAuthorIcon :: Maybe URL
+          <*> pure Nothing 
+    -- , attachmentTitle :: Maybe T.Text
+          <*> pure Nothing 
+    -- , attachmentTitleLink :: Maybe URL
+          <*> pure Nothing
+    -- , attachmentText :: Maybe T.Text
+          <*> pure Nothing 
+    -- , attachmentFields :: [Field]
+          <*> pure []
+    -- , attachmentImageUrl :: Maybe URL
+          <*> pure Nothing
+    -- , attachmentThumbUrl :: Maybe URL
+          <*> pure Nothing
+    -- , attachmentFooter :: Maybe T.Text
+          <*> pure Nothing
+    -- , attachmentFooterIcon :: Maybe URL
+          <*> pure Nothing
+    -- , attachmentTs :: Maybe POSIXTime
+          <*> pure Nothing )
 
 data Field = Field
     { fieldTitle :: Maybe T.Text
@@ -77,7 +110,7 @@ data Field = Field
     , fieldShort :: Bool
         -- ^ Whether the value is short enough to be displayed side-by-side
         -- with other values.
-    }
+    } deriving (Show)
 
 data AttachmentColor
     = DefaultColor       -- grey
@@ -85,7 +118,7 @@ data AttachmentColor
     | WarningColor       -- yellow
     | DangerColor        -- red
     | CustomColor T.Text -- hexadecimal RGB colour, eg. CustomColor "#439FE0"
-    deriving (Generic)
+    deriving (Generic, Show)
 
 defaultAttachment :: Attachment
 defaultAttachment = Attachment

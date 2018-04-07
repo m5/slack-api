@@ -15,6 +15,7 @@ import Web.Slack.Types.Error
 import Web.Slack.Types.Event.Subtype
 import Web.Slack.Types.Time
 import Web.Slack.Types.Presence
+import Web.Slack.Types.Message
 
 import Data.Aeson
 import Data.Aeson.Types
@@ -29,7 +30,7 @@ type Domain = Text
 
 data Event where
   Hello :: Event
-  Message :: ChannelId -> Submitter -> Text -> SlackTimeStamp -> Maybe Subtype -> Maybe Edited -> Event
+  Message :: ChannelId -> Submitter -> Text -> SlackTimeStamp -> Maybe Subtype -> Maybe Edited -> Maybe [Attachment] -> Event
   HiddenMessage :: ChannelId -> Submitter -> SlackTimeStamp -> Maybe Subtype -> Event
   ChannelMarked :: ChannelId -> SlackTimeStamp -> Event
   ChannelCreated :: Channel -> Event
@@ -127,7 +128,7 @@ parseType o@(Object v) typ =
         void $ (v .: "channel" :: Parser ChannelId)
         hidden <- (\case {Just True -> True; _ -> False}) <$> v .:? "hidden"
         if not hidden
-          then Message <$>  v .: "channel" <*> pure submitter  <*> v .: "text" <*> v .: "ts" <*> pure subt <*> v .:? "edited"
+          then Message <$>  v .: "channel" <*> pure submitter  <*> v .: "text" <*> v .: "ts" <*> pure subt <*> v .:? "edited" <*>  v .:? "attachments"
           else HiddenMessage <$>  v .: "channel" <*> pure submitter  <*> v .: "ts" <*> pure subt
       "user_typing" -> UserTyping <$> v .: "channel" <*> v .: "user"
       "presence_change" -> PresenceChange <$> v .: "user" <*> v .: "presence"
