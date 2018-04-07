@@ -26,11 +26,15 @@ data User = User
           } deriving (Show)
 
 instance FromJSON User where
-  parseJSON = withObject "User" (\o -> User <$> o .: "id" <*> o .: "name" <*> o .: "deleted"
-                                        <*> (o .:? "color" .!= "000000")
-                                        <*> o .: "profile" <*> (parseJSON (Object o) :: Parser Permissions)
-                                        <*> fmap (fromMaybe False) (o .:? "has_files")
-                                        <*> ((return $ fromMaybe defaultTimezone (parseMaybe parseJSON (Object o))) :: Parser Timezone))
+  parseJSON = withObject "User" (\o -> 
+      User <$> o .: "id" 
+           <*> o .: "name" 
+           <*> (o .:? "deleted" .!= False)
+           <*> (o .:? "color" .!= "000000")
+           <*> o .: "profile" 
+           <*> (parseJSON (Object o) :: Parser Permissions)
+           <*> fmap (fromMaybe False) (o .:? "has_files")
+           <*> ((return $ fromMaybe defaultTimezone (parseMaybe parseJSON (Object o))) :: Parser Timezone))
 
 defaultTimezone :: Timezone
 defaultTimezone = Timezone Nothing "Pacific Standard Time" (-28800)
