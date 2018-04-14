@@ -68,7 +68,9 @@ data Profile = Profile
              { _profileFirstName          :: Maybe Text
              , _profileLastName           :: Maybe Text
              , _profileRealName           :: Maybe Text
+             , _profileDisplayName        :: Maybe Text
              , _profileRealNameNormalized :: Maybe Text
+             , _profileDisplayNameNormalized :: Maybe Text
              , _profileTitle              :: Maybe Text
              , _progileEmail              :: Maybe Text
              , _profileSkype              :: Maybe Text
@@ -89,9 +91,20 @@ instance FromJSON Profile where
   parseJSON = withObject "Profile"
                 (\o -> let v = (o .:)
                            vm = (o .:?) in
-                  Profile <$> vm "first_name" <*> vm "last_name" <*> vm "real_name"
-                          <*> vm "real_name_normalized" <*> vm "title" <*> vm "email"
-                          <*> vm "skype" <*> vm "phone" <*> v "image_24" <*> v "image_32"
-                          <*> v "image_48" <*> v "image_72" <*> v "image_192")
+                  Profile <$> vm "first_name" 
+                          <*> vm "last_name" 
+                          <*> vm "real_name"
+                          <*> vm "display_name"
+                          <*> vm "real_name_normalized" 
+                          <*> vm "display_name_normalized" 
+                          <*> vm "title" 
+                          <*> vm "email"
+                          <*> vm "skype" 
+                          <*> vm "phone"
+                          <*> v "image_24" 
+                          <*> v "image_32"
+                          <*> v "image_48" 
+                          <*> v "image_72" 
+                          <*> v "image_192")
 
 type Username = Text
