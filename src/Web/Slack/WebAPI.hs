@@ -10,6 +10,7 @@ module Web.Slack.WebAPI
     , rtm_start
     , chat_postMessage
     , reactions_add_message
+    , channels_join
     ) where
 
 import Control.Lens hiding ((??))
@@ -87,6 +88,15 @@ reactions_add_message conf (Id cid) emoji timestamp = do
         (W.param "name"      .~ [emoji]) .
         (W.param "channel"   .~ [cid]) .
         (W.param "timestamp" .~ [encode' timestamp])
+
+channels_join
+    :: (MonadError T.Text m, MonadIO m)
+    => SlackConfig
+    -> T.Text
+    -> m ()
+channels_join conf name = do
+    void $ makeSlackCall conf "channels.join" $
+        (W.param "name" .~ [name])
 
 -------------------------------------------------------------------------------
 -- Helpers

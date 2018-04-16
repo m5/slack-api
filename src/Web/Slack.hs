@@ -53,6 +53,7 @@ module Web.Slack
     , sendRichMessage
     , sendPing
     , addReaction
+    , joinChannel
 
       -- * Type re-exports
     , SlackConfig(..)
@@ -198,6 +199,15 @@ addReaction :: (MonadError T.Text m, MonadIO m)
             -> m ()
 addReaction h cid emoji timestamp =
     reactions_add_message (getConfig h) cid emoji timestamp
+
+-- | Join a channel
+joinChannel :: (MonadError T.Text m, MonadIO m)
+            => SlackHandle
+            -> T.Text
+            -> m ()
+joinChannel h name =
+    channels_join (getConfig h) name
+
 
 -------------------------------------------------------------------------------
 -- Helpers
